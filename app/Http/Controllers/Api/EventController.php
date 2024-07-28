@@ -47,7 +47,14 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        
+        $event->update($request->validate([
+            'name' => 'sometimes|string|max:255',
+            'description' => 'nullable|string',
+            'start_time' => 'sometimes|date',
+            'end_time' => 'sometimes|date|after:start_time'
+        ]));
+
+        return $event;
  
     }
 
@@ -56,6 +63,8 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        
+        $event->delete();
+
+        return response(status: 204);
     }
 }
