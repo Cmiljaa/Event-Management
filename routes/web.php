@@ -7,7 +7,3 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::apiResource('events', EventController::class);
-Route::apiResource('events.attendees', AttendeeController::class)
-->scoped(['attendee' => 'event']);
