@@ -13,6 +13,8 @@ class AttendeeController extends Controller
 {
     use CanLoadRelationships;
 
+    private array $relations = ['user'];
+
     /**
      * Display a listing of the resource.
      */
