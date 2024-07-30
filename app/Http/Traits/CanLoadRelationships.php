@@ -5,15 +5,16 @@ namespace App\Http\Traits;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Http\Request;
 
 trait CanLoadRelationships
 {
-  public function loadRelationships( Model|QueryBuilder|EloquentBuilder $for, ?array $relations = null): Model|QueryBuilder|EloquentBuilder {
+  public function loadRelationships( Model|QueryBuilder|EloquentBuilder $for, Request $request, ?array $relations = null): Model|QueryBuilder|EloquentBuilder {
     $relations = $relations ?? $this->relations ?? [];
 
     foreach ($relations as $relation) {
       $for->when(
-        $this->shouldIncludeRelation($relation),
+        $this->shouldIncludeRelation($relation, $request),
         fn($q) => $for instanceof Model ? $for->load($relation) : $q->with($relation)
       );
     }
@@ -21,9 +22,9 @@ trait CanLoadRelationships
     return $for;
   }
 
-  protected function shouldIncludeRelation(string $relation): bool
+  protected function shouldIncludeRelation(string $relation, Request $request): bool
   {
-    $include = request()->query('include');
+    $include = $request->query('include');
 
     if (!$include) {
       return false;
