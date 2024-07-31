@@ -7,12 +7,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
 use Illuminate\Http\Request;
 use App\Models\Event;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class EventController extends Controller
+class EventController extends Controller implements HasMiddleware
 {
     use CanLoadRelationships;
-
-    private $relations = ['user', 'attendees', 'attendees.user'];
+ 
+    private array $relations = ['user', 'attendees','attendees.user'];
+ 
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth:sanctum', except: ['index', 'show']), 
+        ];
+    }
 
     /**
      * Display a listing of the resource.
